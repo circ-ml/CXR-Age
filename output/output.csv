@@ -1,0 +1,6 @@
+filename,age,sex,smoke,Real_Age,Real_Sex,Real_Status,is_lungcancer,CXRLC_Probability
+E.png,0.0547409351800341,1,1,63,Male,Former,0,0.014032388
+B.png,1.5697311658082398,1,1,71,Male,Former,0,0.06737591
+D.png,0.43348849283708507,1,1,65,Male,Former,1,0.033903364
+C.png,-0.5133804013055421,2,1,60,Female,Former,0,0.010919402
+A.png,0.62286227166561,2,0,66,Female,Current,0,0.04794461
