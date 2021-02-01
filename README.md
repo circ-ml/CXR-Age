@@ -6,17 +6,15 @@
 
 
 ## Overview
-Lung cancer screening with chest CT reduces lung cancer deaths. Currently, CT screening is offered to those eligible by the Centers for Medicare and Medicaid services (CMS) screening criteria. This criteria misses many lung cancers and requires detailed smoking information (e.g. cigarette pack-years) that is poorly documented in the electronic medical record (EMR). Less than 5% of Americans eligible for lung cancer screening CT are screened, a dismal rate compared to breast (64%) and colorectal (63%) cancer screening. An automated way to flag high risk smokers could improve screening participation and prevent lung cancer death.
+Age-related chronic disease causes 60% of deaths in the US. Primary prevention (e.g. statin to prevent cardiovascular disease) and screening (e.g. screening for lung cancer with chest CT) interventions are based on chronological age, but chronological age is an imperfect measure of aging. A measure of biological age that more accurately predicts longevity and disease would enable healthcare providers to better personalize care and help researchers address factors underlying the aging process.
 
-Chest x-rays (radiographs or CXRs) are among the most common diagnostic imaging tests in medicine. We hypothesized that a convolutional neural network (CNN) could extract information from these x-rays, along with other data commonly available in the electronic medical record, to identify individuals at high risk for lung cancer who would benefit from lung cancer screening CT.
+Chest x-rays (radiographs or CXRs) are among the most common diagnostic imaging tests in medicine. We hypothesized that a convolutional neural network (CNN) could extract information from these x-rays to estimate a person's chest x-ray age (or CXR-Age) - a summary measure of overall health based on the chest x-ray image. We tested whether CXR-Age predicted life expectancy beyond chronological age.
 
-Our CXR-LC CNN outputs a probability of 12-year incident lung cancer based on inputs of a chest radiograph image, age, sex, and smoking status (current vs. former smoker). CXR-LC was developed in 41,856 persons from the Prostate, Lung, Colorectal and Ovarian cancer screening trial (PLCO), a randomized controlled trial of chest x-ray to screen healthy persons for lung cancer. 
+CXR-Age outputs a number (in years) reflecting all-cause mortality risk based on only a single chest radiograph image. CXR-Age was developed in two steps. First, it was trained to predict chronological age in over 100,000 images from publicly available chest x-ray datasets (CheXpert, PadCHEST, and NIH CXR-14). Then, the model was fine-tuned to estimate a "biological age" in XX persons from the Prostate, Lung, Colorectal and Ovarian cancer screening trial (PLCO), a randomized controlled trial of chest x-ray to screen healthy persons for lung cancer. 
 
-CXR-LC was tested (referred to as "validation" in the publication) in an independent cohort of 5,615 PLCO smokers and externally tested in 5,493 heavy smokers from the National Lung Screening Trial (NLST). CXR-LC performed better than the current clinical standard, the CMS eligibility criteria for lung cancer screening CT (AUC 0.755 vs 0.634, p < 0.001). When compared at equal-sized screening populations to the CMS criteria, CXR-LC missed 30.7% fewer lung cancers. 
+CXR-Age was tested (referred to as "validation" in the publication) in an independent cohort of 40,967 individuals from PLCO and externally tested in 5,493 heavy smokers from the National Lung Screening Trial (NLST). CXR-LC predicted long-term all-cause (CXR-Age HR 2.26 per 5 years; p < 0.001) and cardiovascular mortality (CXR-Age cause specific HR 2.45 per 5 years, p< 0.001) in the PLCO testing dataset. Similar results were found in NLST. Adding CXR-Age to a multivariable model of conventional cardiovascular risk factors resulted in significant improvements for predicting both outcomes in both datasets. 
 
-
-
-**Inverted Kaplan-Meier for Incident Lung Cancer based on CXR-LC category**
+**Central Illustration of CXR-Age**
 ![CXR-LC Kaplan-Meier](/images/KM_Curve_cropped.jpg)
 
 This repo contains data intended to promote reproducible research. It is not for clinical care or commercial use. 
@@ -31,27 +29,19 @@ For the model weights to download, Github's large file service must be downloade
 This example is best run in a conda environment:
 
 ```bash
-git lfs clone https://github.com/vineet1992/CXRLC/
+git lfs clone https://github.com/vineet1992/CXR-Age/
 cd location_of_repo
-conda env create -n CXRLC -f environment.yml
-conda activate CXRLC
-python run_mixed.py dummy_datasets/test_images/ development/models/CXRLC dummy_datasets/Tabular_Data.csv output/output.csv --cont=age --cat=sex,smoke --target=is_lungcancer
+conda env create -n CXR_Age -f environment.yml
+conda activate CXR_Age
+python run_model.py dummy_datasets/test_images/ development/models/PLCO_Fine_Tuned_120419 output/output.csv --modelarch=age --type=continuous --size=224
 ```
 
-Dummy data files are provided in `dummy_datasets/Tabular_Data.csv` and `dummy_datasets/test_images/;` dummy images are provided in the `test_images` folder. Weights for the CXR-Risk model are in `development/models/CXRLC.pth`. 
-
-Age input into the model must be normalized by the following equation:
-
-Model_Age = (age - 62.71093709214304) / 5.2805621041415804 .
-
-Sex should be encoded as 0 = Male and 1 = Female .
-
-Smoking Status should be encoded as 0 = current smoker and 1 = former smoker .
+Dummy image files are provided in `dummy_datasets/test_images/;`. Weights for the CXR-Age model are in `development/models/PLCO_Fine_Tuned_120419.pth`. 
 
 ## Datasets
 PLCO (NCT00047385) data used for model development and testing are available from the National Cancer Institute (NCI, https://biometry.nci.nih.gov/cdas/plco/). NLST (NCT01696968) testing data is available from the NCI (https://biometry.nci.nih.gov/cdas/nlst/) and the American College of Radiology Imaging Network (ACRIN, https://www.acrin.org/acrin-nlstbiorepository.aspx). Due to the terms of our data use agreement, we cannot distribute the original data. Please instead obtain the data directly from the NCI and ACRIN.
 
-The `data` folder provides the image filenames, split of PLCO into independent training/tuning/testing datasets, and the CXR-Risk output probabilities: 
+The `data` folder provides the image filenames, split of PLCO into independent training/tuning/testing datasets, and the CXR-Age estimates: 
 * `PLCO_Scaled_Probabilities.csv` contains the probabilities (Scaled_CXRLC_Risk) generated by CXR-LC in the PLCO testing dataset. Probabilities were put into ordinal categories (CXRLC_Group) as described in the manuscript. filenamepng refers to the original TIF filename converted to a PNG. "Dataset" is "Tr" for training, "Tu" for tuning, and "Te" for testing. 
 * `NLST_Scaled_Probabilities.csv` contains the probabilities (Scaled_CXRLC_Risk) and ordinal probability categories (CXRLC_Group) for the NLST testing dataset. The format for filenamepng is the (original participant directory)_(original DCM filename).png
 
@@ -85,11 +75,6 @@ mogrify -rotate "90" -flop 204025_CR_2000-01-01_135015_CHEST_CHEST_n1__00000_1.3
 mogrify -rotate "-90" 208201_CR_2000-01-01_163352_CHEST_CHEST_n1__00000_2.16.840.1.113786.1.306662666.44.51.9597.png
 mogrify -flip -flop 208704_CR_2000-01-01_133331_CHEST_CHEST_n1__00000_1.3.51.5146.1829.20030718.1122210.1.png
 mogrify -rotate "-90" 215085_CR_2000-01-01_112945_CHEST_CHEST_n1__00000_1.3.51.5146.1829.20030605.1101942.1.png
-```
-As a final step, we used the Python Imaging Library (PIL) to resize each image to 224 x 224 using a bilinear interpolation.
-
-```
-python preprocessing/ImageResizer.py <path_to_512_images> <path_to_output_directory_224_224_images>
 ```
 
 ## Acknowledgements
