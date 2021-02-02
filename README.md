@@ -1,6 +1,6 @@
 # CXR-Age: Deep learning to estimate biological age from chest radiographs
 
-![CXR-LC Grad-CAM](/images/GradCAM.png)
+![CXR-Age Grad-CAM](/images/GradCAM_Github_020121.png)
 
 [Raghu VK*, Weiss, J., Hoffmann, U., Aerts HJWL, and Lu, MT. Deep learning to estimate biological age from chest radiographs. Journal of the American College of Cardiology: Cardiovascular Imaging 2021; Forthcoming.](<add NIH link>) *Equal contribution
 
@@ -15,7 +15,7 @@ CXR-Age outputs a number (in years) reflecting all-cause mortality risk based on
 CXR-Age was tested (referred to as "validation" in the publication) in an independent cohort of 40,967 individuals from PLCO and externally tested in 5,493 heavy smokers from the National Lung Screening Trial (NLST). CXR-LC predicted long-term all-cause (CXR-Age HR 2.26 per 5 years; p < 0.001) and cardiovascular mortality (CXR-Age cause specific HR 2.45 per 5 years, p< 0.001) in the PLCO testing dataset. Similar results were found in NLST. Adding CXR-Age to a multivariable model of conventional cardiovascular risk factors resulted in significant improvements for predicting both outcomes in both datasets. 
 
 **Central Illustration of CXR-Age**
-![CXR-LC Kaplan-Meier](/images/KM_Curve_cropped.jpg)
+![CXR-Age Central Illustration](/images/Central_Illustration_VKR_122820.tif)
 
 This repo contains data intended to promote reproducible research. It is not for clinical care or commercial use. 
 
