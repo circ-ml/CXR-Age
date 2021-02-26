@@ -201,8 +201,15 @@ if __name__ == '__main__':
                              nn.Linear(512,numFeatures,bias=True),nn.ReLU(inplace=True),nn.BatchNorm1d(numFeatures),
                              nn.Linear(numFeatures,1,bias=True)).cuda()
                              
-                             
-    learn.load(mdl_path)
+
+    N = len(image_dir.split("/"))
+    dir_fix = "../"*(N-1)
+    learn.model_dir = "."
+    learn.load(os.path.join(dir_fix,mdl_path))
+
+
+
+
     if(arguments['--type'].lower()=="discrete"):
         preds,y,sd_preds = _TTA(learn,ds_type = DatasetType.Fix,activ=nn.Softmax())
     
@@ -218,7 +225,6 @@ if __name__ == '__main__':
 
 
     if(m=="age"):
-        import pdb; pdb.set_trace()
         arr = np.array(output_df.Prediction)
         arr = arr * 8.03342449139388 + 63.8723890235948
         arr = arr * 6.75523 - 0.03771*arr*arr -213.77257 
