@@ -1,7 +1,7 @@
 """Main testing script for the composite outcome experiment. Purpose is to determine whether using composite outcomes improves DL performance for prognosis
 
 Usage:
-  run_model.py <image_dir> <model_path> <output_file> [--checkFiles] [--modelarch=MODELARCH] [--type=TYPE] [--dataframe=DF] [--target=TARGET] [--split=SPLIT] [--size=SIZE]
+  run_model.py <image_dir> <model_path> <output_file> [--checkFiles] [--modelarch=MODELARCH] [--type=TYPE] [--dataframe=DF] [--target=TARGET] [--split=SPLIT] [--size=SIZE] [--saliency=SAL_DIR]
   run_model.py (-h | --help)
 Examples:
   run_model.py /path/to/images /path/to/model /path/to/write/output.csv
@@ -14,10 +14,10 @@ Options:
   --split=SPLIT                If split, then split on the Dataset column keeping only the Te values [default: False]
   --checkFiles                 Should we check whether df files actually exist?
   --size=SIZE                  Resize to this size [Default:224]
+  --saliency=SAL_DIR           Directory to write saliency maps to [Default:None]
 """
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 from docopt import docopt
 import pandas as pd
 import fastai
@@ -28,6 +28,10 @@ from fastai.callbacks import *
 import math
 import time
 import SimpleArchs
+import GradCAMUtils
+from PIL import Image
+from torchvision import transforms
+
 
 ###TODO Add optional checkpointing (optional result file to append to, skipping loop iteration if model exists)
 tfms_test = get_transforms(do_flip = False,max_warp = None)
@@ -222,6 +226,41 @@ if __name__ == '__main__':
     ###output predictions as column with model name
         output_df['Prediction'] = np.array(preds)
         output_df['SD_Prediction'] = np.array(sd_preds)
+    
+
+
+    learn.data.batch_size = 1
+    learn.data.valid_dl = imgs.train_dl.new(shuffle=False)
+    learn.model.eval()
+
+    rc = GradCAMUtils.ResnetCAM(learn.model)
+    count = 0
+    #Saliency maps
+    if(arguments['--saliency'] is not None):
+        for i in progress_bar(learn.data.valid_dl):
+            img = i[0]
+            tmp = img.resize(1,3,224,224).cuda()
+            tmp.requires_grad_()
+            pred = rc(tmp)
+            if(arguments['--type'].lower()=="continuous"):
+                pred.backward()
+            else:
+                prob = F.softmax(pred,dim=1)
+                pred[:,1].backward()
+            saliency,_ = torch.max(tmp.grad.data.abs(),dim=1)
+        #import pdb; pdb.set_trace()
+            filename = output_df.iloc[count,0]
+
+            img = Image.open(os.path.join(image_dir,filename)).convert('RGB')
+            img = transforms.ToTensor()(img)
+            new_img = rc.blendImage(saliency[0,:,:].detach().clone().cpu(),img.detach().clone(),alpha=0.5,cmap='hot')
+        ###Because filenames include full path here
+            if(len(filename.split("/"))>1):
+                tmp_fname = filename.split("/")
+                filename = tmp_fname[len(tmp_fname)-1]
+        
+            new_img.save(os.path.join(arguments['--saliency'],filename))
+            count = count + 1
 
 
     if(m=="age"):
