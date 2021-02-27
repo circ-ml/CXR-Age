@@ -36,6 +36,11 @@ conda activate CXR_Age
 python run_model.py dummy_datasets/test_images/ development/models/PLCO_Fine_Tuned_120419 output/output.csv --modelarch=age --type=continuous --size=224
 ```
 
+To generate saliency maps for each estimate, add "--saliency=path/to/output/saliency/maps". Next is a complete example of this command
+
+```bash
+python run_model.py dummy_datasets/test_images/ development/models/PLCO_Fine_Tuned_120419 output/output.csv --modelarch=age --type=continuous --size=224 --saliency=saliency_maps
+```
 Dummy image files are provided in `dummy_datasets/test_images/;`. Weights for the CXR-Age model are in `development/models/PLCO_Fine_Tuned_120419.pth`. 
 
 ## Datasets
