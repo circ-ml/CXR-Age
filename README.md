@@ -2,8 +2,8 @@
 
 ![CXR-Age Grad-CAM](/images/GradCAM_Github_020121.png)
 
-[Raghu VK*, Weiss, J., Hoffmann, U., Aerts HJWL, and Lu, MT. Deep learning to estimate biological age from chest radiographs. Journal of the American College of Cardiology: Cardiovascular Imaging 2021; Epub ahead of print](<add NIH link>) *Equal contribution
-authors.elsevier.com/a/1clbm,i2Xrn9-f
+[Raghu VK*, Weiss, J., Hoffmann, U., Aerts HJWL, and Lu, MT. Deep learning to estimate biological age from chest radiographs. Journal of the American College of Cardiology: Cardiovascular Imaging 2021; Epub ahead of print](<authors.elsevier.com/a/1clbm,i2Xrn9-f
+>) *Equal contribution
 
 
 ## Overview
