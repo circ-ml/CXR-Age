@@ -18,7 +18,6 @@ Options:
 """
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 from docopt import docopt
 import pandas as pd
 import fastai
