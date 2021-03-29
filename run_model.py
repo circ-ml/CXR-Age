@@ -18,6 +18,7 @@ Options:
 """
 
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 from docopt import docopt
 import pandas as pd
 import fastai
@@ -81,17 +82,21 @@ bs = 32
 if __name__ == '__main__':
 
     arguments = docopt(__doc__)
-  
     ###Grab image directory
     image_dir = arguments['<image_dir>']
+    one = False
     
     mdl_path = arguments['<model_path>']
     size = int(arguments['--size'])
-
     ###set model architecture
     m = arguments['--modelarch'].lower()
     if(arguments['--dataframe']=="None"):
         files = [f for f in os.listdir(image_dir) if os.path.isfile(os.path.join(image_dir,f))] 
+        
+        if(len(files)==1):
+            one = True
+            files.extend(files)
+
         ###Results
         output_df = pd.DataFrame(columns = ['File','Dummy','Prediction'])
         
@@ -213,7 +218,6 @@ if __name__ == '__main__':
 
 
 
-
     if(arguments['--type'].lower()=="discrete"):
         preds,y,sd_preds = _TTA(learn,ds_type = DatasetType.Fix,activ=nn.Softmax())
     
@@ -226,8 +230,6 @@ if __name__ == '__main__':
     ###output predictions as column with model name
         output_df['Prediction'] = np.array(preds)
         output_df['SD_Prediction'] = np.array(sd_preds)
-    
-
 
     learn.data.batch_size = 1
     learn.data.valid_dl = imgs.train_dl.new(shuffle=False)
@@ -261,8 +263,8 @@ if __name__ == '__main__':
         
             new_img.save(os.path.join(arguments['--saliency'],filename))
             count = count + 1
-
-
+    if(one):
+        output_df.drop([1])
     if(m=="age"):
         arr = np.array(output_df.Prediction)
         arr = arr * 8.03342449139388 + 63.8723890235948
