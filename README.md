@@ -2,7 +2,7 @@
 
 ![CXR-Age Grad-CAM](/images/GradCAM_Github_020121.png)
 
-[Raghu VK*, Weiss, J., Hoffmann, U., Aerts HJWL, and Lu, MT. Deep learning to estimate biological age from chest radiographs. Journal of the American College of Cardiology: Cardiovascular Imaging 2021; Forthcoming.](<add NIH link>) *Equal contribution
+[Raghu VK*, Weiss, J., Hoffmann, U., Aerts HJWL, and Lu, MT. Deep learning to estimate biological age from chest radiographs. Journal of the American College of Cardiology: Cardiovascular Imaging 2021; Epub ahead of print](<https://authors.elsevier.com/a/1clbm,i2Xrn9-f>) *Equal contribution
 
 
 ## Overview
@@ -36,6 +36,11 @@ conda activate CXR_Age
 python run_model.py dummy_datasets/test_images/ development/models/PLCO_Fine_Tuned_120419 output/output.csv --modelarch=age --type=continuous --size=224
 ```
 
+To generate saliency maps for each estimate, add "--saliency=path/to/output/saliency/maps". Next is a complete example of this command
+
+```bash
+python run_model.py dummy_datasets/test_images/ development/models/PLCO_Fine_Tuned_120419 output/output.csv --modelarch=age --type=continuous --size=224 --saliency=saliency_maps
+```
 Dummy image files are provided in `dummy_datasets/test_images/;`. Weights for the CXR-Age model are in `development/models/PLCO_Fine_Tuned_120419.pth`. 
 
 ## Datasets
@@ -78,6 +83,6 @@ mogrify -rotate "-90" 215085_CR_2000-01-01_112945_CHEST_CHEST_n1__00000_1.3.51.5
 ```
 
 ## Acknowledgements
-I thank the NCI and ACRIN for access to trial data, as well as the PLCO and NLST participants for their contribution to research. I would also like to thank the fastai and Pytorch communities. A GPU used for this research was donated as an unrestricted gift through the Nvidia Corporation Academic Program. The statements contained herein are mine alone and do not represent or imply concurrence or endorsements by the above individuals or organizations.
+I thank the NCI and ACRIN for access to trial data, as well as the PLCO and NLST participants for their contribution to research. I would also like to thank the fastai and Pytorch communities as well as the National Academy of Medicine for their support of this work. A GPU used for this research was donated as an unrestricted gift through the Nvidia Corporation Academic Program. The statements contained herein are mine alone and do not represent or imply concurrence or endorsements by the above individuals or organizations.
 
 
