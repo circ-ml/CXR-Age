@@ -5,6 +5,7 @@
 [Raghu VK*, Weiss, J., Hoffmann, U., Aerts HJWL, and Lu, MT. Deep learning to estimate biological age from chest radiographs. Journal of the American College of Cardiology: Cardiovascular Imaging 2021; Epub ahead of print](<https://authors.elsevier.com/a/1clbm,i2Xrn9-f>) *Equal contribution
 
 
+
 ## Overview
 Age-related chronic disease causes 60% of deaths in the US. Primary prevention (e.g. statin to prevent cardiovascular disease) and screening (e.g. screening for lung cancer with chest CT) interventions are based on chronological age, but chronological age is an imperfect measure of aging. A measure of biological age that more accurately predicts longevity and disease would enable healthcare providers to better personalize care and help researchers address factors underlying the aging process.
 
@@ -18,6 +19,8 @@ CXR-Age was tested (referred to as "validation" in the publication) in an indepe
 ![CXR-Age Central Illustration](/images/Central_Illustration.png)
 
 This repo contains data intended to promote reproducible research. It is not for clinical care or commercial use. 
+
+For those without programming expertise, please use our user-friendly webserver: https://cxrage.org/#home
 
 ## Installation
 This inference code was tested on Ubuntu 18.04.3 LTS, conda version 4.8.0, python 3.7.7, fastai 1.0.61, cuda 10.2, pytorch 1.5.1 and cadene pretrained models 0.7.4. A full list of dependencies is listed in `environment.yml`. 
